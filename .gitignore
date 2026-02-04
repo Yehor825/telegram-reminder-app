@@ -1,0 +1,9 @@
+node_modules/
+.env
+*.sqlite
+*.db
+dist/
+build/
+.vercel
+*.log
+.DS_Store

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: var(--tg-theme-bg-color, #f9fafb);
+  color: var(--tg-theme-text-color, #000);
+}
