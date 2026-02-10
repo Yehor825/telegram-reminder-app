@@ -142,6 +142,36 @@ app.get('/api/notifications', (req, res) => {
   res.json(notifications);
 });
 
+// Database setup
+const Database = require('better-sqlite3');
+const db = new Database('publications.db');
+
+// Create tables
+db.exec(`
+  CREATE TABLE IF NOT EXISTS publications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    publisher TEXT NOT NULL,
+    groups TEXT NOT NULL,
+    publications_per_day INTEGER NOT NULL,
+    end_date TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    publication_id INTEGER NOT NULL,
+    publisher TEXT NOT NULL,
+    type TEXT NOT NULL,
+    sent_at TEXT DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
+console.log('✅ Database ready');
+
 // Планировщик для проверки и отправки напоминаний
 // Проверка каждый час
 cron.schedule('0 * * * *', () => {
@@ -177,4 +207,19 @@ process.on('unhandledRejection', (error) => {
 
 bot.on('polling_error', (error) => {
   console.error('Polling error:', error);
+});
+
+app.get('/api/test-db', (req, res) => {
+  try {
+    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+    const count = db.prepare("SELECT COUNT(*) as count FROM publications").get();
+    
+    res.json({
+      status: 'ok',
+      tables: tables.map(t => t.name),
+      publicationsCount: count.count
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
