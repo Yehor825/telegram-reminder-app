@@ -47,15 +47,26 @@ bot.onText(/\/start/, (msg) => {
 // API Routes
 
 // Получить все публикации пользователя
+// Get all publications for a user
 app.get('/api/publications', (req, res) => {
-  const userId = req.query.userId;
+  const { userId } = req.query;
   
   if (!userId) {
     return res.status(400).json({ error: 'userId is required' });
   }
 
-  const publications = db.getPublications(userId);
-  res.json(publications);
+  try {
+    const publications = db.prepare(`
+      SELECT * FROM publications 
+      WHERE user_id = ? 
+      ORDER BY end_date ASC
+    `).all(userId);  // ← ВАЖНО: .all() возвращает массив!
+    
+    res.json(publications || []);  // ← ВАЖНО: всегда массив!
+  } catch (error) {
+    console.error('Error fetching publications:', error);
+    res.status(500).json({ error: 'Failed to fetch publications' });
+  }
 });
 
 // Добавить новую публикацию
