@@ -4,7 +4,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
-const Database = require('./database');
+const Database = require('better-sqlite3')
 const NotificationService = require('./notificationService');
 
 const app = express();
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 // Инициализация базы данных
-const db = new Database();
+const Database = new Database();
 db.init();
 
 // Инициализация сервиса уведомлений
@@ -143,7 +143,6 @@ app.get('/api/notifications', (req, res) => {
 });
 
 // Database setup
-const Database = require('better-sqlite3');
 const db = new Database('publications.db');
 
 // Create tables
