@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 // Инициализация базы данных
-const Database = new Database();
+const db = new Database('./database.db');
 db.init();
 
 // Инициализация сервиса уведомлений
