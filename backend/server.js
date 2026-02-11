@@ -142,9 +142,6 @@ app.get('/api/notifications', (req, res) => {
   res.json(notifications);
 });
 
-// Database setup
-const db = new Database('publications.db');
-
 // Create tables
 db.exec(`
   CREATE TABLE IF NOT EXISTS publications (
