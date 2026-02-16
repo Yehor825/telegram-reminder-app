@@ -18,10 +18,7 @@ app.use(bodyParser.json());
 // Инициализация бота
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
-// Инициализация базы данных
-const db = new Database('./database.db');
-
-// Initialize database
+// Инициализация базы данны
 const db = new Database('./database.db');
 
 console.log('✅ Telegram bot initialized');
