@@ -20,7 +20,39 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 // Инициализация базы данных
 const db = new Database('./database.db');
-db.init();
+
+// Initialize database
+const db = new Database('./database.db');
+
+console.log('✅ Telegram bot initialized');
+
+// Create tables
+db.exec(`
+  CREATE TABLE IF NOT EXISTS publications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    publisher TEXT NOT NULL,
+    groups TEXT NOT NULL,
+    publications_per_day INTEGER NOT NULL,
+    end_date TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    publication_id INTEGER NOT NULL,
+    publisher TEXT NOT NULL,
+    type TEXT NOT NULL,
+    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (publication_id) REFERENCES publications(id)
+  )
+`);
+
+console.log('✅ SQLite connected');
+console.log('✅ Tables ready');
 
 // Инициализация сервиса уведомлений
 const notificationService = new NotificationService(bot, db);
