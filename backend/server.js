@@ -1,9 +1,8 @@
 const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const cron = require('node-cron');
-const Database = require('better-sqlite3')
+const Database = require('better-sqlite3');
 const NotificationService = require('./notificationService');
 
 const app = express();
@@ -11,9 +10,10 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173'
+  origin: process.env.FRONTEND_URL || '*'
 }));
-app.use(bodyParser.json());
+app.use(express.json());
+
 
 // Инициализация бота
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
